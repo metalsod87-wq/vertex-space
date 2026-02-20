@@ -257,6 +257,32 @@
              .detail-video {
                  display: none !important;
              }
+			 /* 모바일 다크 모드 (배경 검은색, 글자 흰색 통일) */
+             body, .container {
+                 background-color: #000000 !important;
+                 color: #ffffff !important;
+             }
+             .section-title {
+                 color: #ffffff !important;
+                 border-bottom-color: #333333 !important;
+             }
+             .project-card {
+                 background-color: #111111 !important;
+                 border-color: #333333 !important;
+             }
+             .project-card h3 {
+                 color: #ffffff !important;
+             }
+             .back-btn {
+                 background-color: #222222 !important;
+                 color: #ffffff !important;
+             }
+             #detail-title, .section-head, .tech-term {
+                 color: #ffffff !important;
+             }
+             .section-sub, .tech-list li {
+                 color: #aaaaaa !important;
+             }
          }
 		 
       </style>
@@ -670,19 +696,8 @@
          modal.style.display = 'flex';
          }         
 		function closeModal() {
+					 // 꼬이는 원인이었던 메타 태그 제어 코드를 지우고 숨기기만 합니다.
 					 document.getElementById('image-modal').style.display = 'none';
-
-					 // --- 사진 창 닫을 때 화면 확대 상태 원상복구 ---
-					 const viewportMeta = document.querySelector('meta[name="viewport"]');
-					 if (viewportMeta) {
-						 // 1. 강제로 원래 배율(1.0)로 되돌리고 확대를 막음
-						 viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-						 
-						 // 2. 0.1초 뒤에 다시 웹페이지 확장이 가능하도록 락을 풀어줌
-						 setTimeout(() => {
-							 viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
-						 }, 100);
-					 }
 				 }
          
          function changeImage(direction, event) {
@@ -713,34 +728,32 @@
              }
          });
 		 
-// --- 모바일 스와이프(좌우 넘기기) 기능 ---
+// --- 모바일 스와이프(좌우 넘기기) 기능 (두 손가락 줌인 방어 추가) ---
          let touchStartX = 0;
          let touchEndX = 0;
 
          const imageModal = document.getElementById('image-modal');
 
-         // 화면을 터치하기 시작할 때의 X 좌표 기록
          imageModal.addEventListener('touchstart', function(event) {
-             touchStartX = event.changedTouches[0].screenX;
+             // 터치한 손가락이 딱 1개일 때만 좌표를 기록합니다. (두 손가락 줌인 시 무시)
+             if (event.touches.length === 1) {
+                 touchStartX = event.changedTouches[0].screenX;
+             } else {
+                 touchStartX = null; // 손가락이 2개 이상이면 취소
+             }
          }, false);
 
-         // 화면에서 손가락을 뗄 때의 X 좌표 기록 및 방향 계산
          imageModal.addEventListener('touchend', function(event) {
-             touchEndX = event.changedTouches[0].screenX;
-             handleSwipe();
+             if (touchStartX !== null && event.changedTouches.length === 1) {
+                 touchEndX = event.changedTouches[0].screenX;
+                 handleSwipe();
+             }
          }, false);
 
          function handleSwipe() {
-             const swipeThreshold = 50; // 이 픽셀(50px) 이상 밀어야 스와이프로 인정
-
-             // 왼쪽으로 스와이프 (다음 사진)
-             if (touchEndX < touchStartX - swipeThreshold) {
-                 changeImage(1);
-             }
-             // 오른쪽으로 스와이프 (이전 사진)
-             if (touchEndX > touchStartX + swipeThreshold) {
-                 changeImage(-1);
-             }
+             const swipeThreshold = 50; 
+             if (touchEndX < touchStartX - swipeThreshold) changeImage(1);
+             if (touchEndX > touchStartX + swipeThreshold) changeImage(-1);
          }
 
       </script>
