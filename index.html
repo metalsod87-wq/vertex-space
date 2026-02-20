@@ -669,9 +669,21 @@
          updateModalImage();
          modal.style.display = 'flex';
          }         
-         function closeModal() {
-             document.getElementById('image-modal').style.display = 'none';
-         }
+		function closeModal() {
+					 document.getElementById('image-modal').style.display = 'none';
+
+					 // --- 사진 창 닫을 때 화면 확대 상태 원상복구 ---
+					 const viewportMeta = document.querySelector('meta[name="viewport"]');
+					 if (viewportMeta) {
+						 // 1. 강제로 원래 배율(1.0)로 되돌리고 확대를 막음
+						 viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+						 
+						 // 2. 0.1초 뒤에 다시 웹페이지 확장이 가능하도록 락을 풀어줌
+						 setTimeout(() => {
+							 viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+						 }, 100);
+					 }
+				 }
          
          function changeImage(direction, event) {
              if (event) event.stopPropagation();
@@ -700,6 +712,37 @@
                  else if (event.key === 'ArrowRight') changeImage(1);
              }
          });
+		 
+// --- 모바일 스와이프(좌우 넘기기) 기능 ---
+         let touchStartX = 0;
+         let touchEndX = 0;
+
+         const imageModal = document.getElementById('image-modal');
+
+         // 화면을 터치하기 시작할 때의 X 좌표 기록
+         imageModal.addEventListener('touchstart', function(event) {
+             touchStartX = event.changedTouches[0].screenX;
+         }, false);
+
+         // 화면에서 손가락을 뗄 때의 X 좌표 기록 및 방향 계산
+         imageModal.addEventListener('touchend', function(event) {
+             touchEndX = event.changedTouches[0].screenX;
+             handleSwipe();
+         }, false);
+
+         function handleSwipe() {
+             const swipeThreshold = 50; // 이 픽셀(50px) 이상 밀어야 스와이프로 인정
+
+             // 왼쪽으로 스와이프 (다음 사진)
+             if (touchEndX < touchStartX - swipeThreshold) {
+                 changeImage(1);
+             }
+             // 오른쪽으로 스와이프 (이전 사진)
+             if (touchEndX > touchStartX + swipeThreshold) {
+                 changeImage(-1);
+             }
+         }
+
       </script>
    </body>
 </html>
