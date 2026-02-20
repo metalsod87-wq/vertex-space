@@ -10,30 +10,30 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
       <style>
-		body {
-			background-color: #ffffff;
-			color: #333333;
-			font-family: 'Inter', 'Noto Sans KR', sans-serif;
-			padding-top: 0 !important; /* 바디 상단 여백 제거 */
-		}
-		.container {
-			max-width: 960px;
-			margin: 0 auto; /* 위쪽 마진 0 */
-			padding: 1rem 2.5rem 2.5rem 2.5rem; /* 위쪽 패딩만 1rem으로 축소 */
-			line-height: 1.6;
-			background-color: #ffffff;
-			border-radius: 1rem;
-		}
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            padding-top: 0 !important;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1rem 2.5rem 2.5rem 2.5rem;
+            line-height: 1.6;
+            background-color: #ffffff;
+            border-radius: 1rem;
+        }
 
-		.section-title {
-			font-size: 1.25rem;
-			font-weight: 700;
-			color: #1f2937;
-			border-bottom: 2px solid #e5e7eb;
-			padding-bottom: 0.75rem;
-			margin-top: 0; /* 제목 위 여백 삭제 */
-			margin-bottom: 1.25rem;
-		}
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+        }
          .skills-tag {
          background-color: #e5e7eb;
          color: #4b5563;
@@ -71,20 +71,30 @@
          display: none;
          animation: fadeIn 0.3s ease-in-out;
          }
-         /* 이미지 그리드 스타일 (3열) */
-         .detail-image {
-         width: 100%;
-         aspect-ratio: 16/9;
-         object-fit: cover;
-         border-radius: 0.5rem;
-         cursor: zoom-in;
-         transition: opacity 0.2s;
-         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-         background-color: #f3f4f6;
-         }
-         .detail-image:hover {
-         opacity: 0.9;
-         }
+         /* 이미지 및 동영상 그리드 스타일 */
+		.detail-image, .detail-video {
+			display: block;
+			width: 100%;
+			margin-bottom: 1rem;
+			break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
+		}
+
+		.detail-video {
+			width: 100%;
+			max-height: 85vh; /* 영상이 화면 높이를 넘지 않도록 제한 */
+			object-fit: cover;
+			border-radius: 0.5rem;
+			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+			background-color: #000000;
+			outline: none;
+		}
+
+		/* 모바일 외의 화면에서 동영상을 더 강조하고 싶다면 */
+		@media (min-width: 640px) {
+			.video-wide {
+				grid-column: span 2; /* 가로/세로 상관없이 영상은 2칸 차지하여 크게 보기 */
+			}
+		}
          .back-btn {
          display: inline-flex;
          align-items: center;
@@ -391,8 +401,8 @@
                   </button>
                   <h2 id="detail-title" class="text-lg font-bold text-gray-800 pr-2"></h2>
                </div>
-               <div id="detail-images-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
-               </div>
+               <div id="detail-images-container" class="columns-1 sm:columns-2 md:columns-3 gap-4 w-full">
+				</div>
                <div class="text-center mt-10 mb-20">
                   <button class="back-btn" onclick="hideProjectDetail()">목록으로 돌아가기</button>
                </div>
@@ -412,54 +422,114 @@
          let savedScrollPosition = 0;
          
          const projectDetails = {
-            // 프로젝트별 상세 설정이 필요할 경우 여기에 추가
+            'VALHALLA SURVIVAL': [
+               {
+                  type: 'videos',
+                  files: [
+                     './VALHALLA SURVIVAL/Startup_Login_01_v1.mp4',
+                     './VALHALLA SURVIVAL/Startup_Login_01_v2.mp4',
+                     './VALHALLA SURVIVAL/Startup_Login_01_v3.mp4',
+                     './VALHALLA SURVIVAL/ChapterBoss_Mid_Master 1.mp4',
+                     './VALHALLA SURVIVAL/ChapterBoss_Jotun_Master 1.mp4',
+                     './VALHALLA SURVIVAL/ChapterBoss_Nida_Master 1.mp4',
+                     './VALHALLA SURVIVAL/ChapterBoss_Mus_Master 1.mp4'
+                  ]
+               },
+               {
+                  type: 'images',
+                  range: [1, 100] // 기존처럼 1~100번 이미지를 불러옵니다.
+               }
+            ]
          };
          
-         function showProjectDetail(folderName, title) {
-             savedScrollPosition = window.scrollY;
-         
-             document.getElementById('portfolio-list').style.display = 'none';
-             document.getElementById('portfolio-detail').style.display = 'block';
-             document.getElementById('detail-title').innerText = title;
-         
-             const container = document.getElementById('detail-images-container');
-             container.innerHTML = '';
-         
-             const details = projectDetails[folderName];
-         
-             if (details) {
-                 details.forEach(block => {
-                     if (block.type === 'text') {
-                         const textDiv = document.createElement('div');
-                         textDiv.className = 'project-section-text';
-         
-                         let htmlContent = `<h3 class="section-head">${block.title}</h3>`;
-                         if (block.subtitle) htmlContent += `<p class="section-sub">${block.subtitle}</p>`;
-         
-                         if (block.bullets && block.bullets.length > 0) {
-                             htmlContent += `<ul class="tech-list">`;
-                             block.bullets.forEach(item => {
-                                 htmlContent += `<li><span class="tech-term">${item.term}:</span>${item.desc}</li>`;
-                             });
-                             htmlContent += `</ul>`;
-                         }
-                         textDiv.innerHTML = htmlContent;
-                         container.appendChild(textDiv);
-         
-                     } else if (block.type === 'images') {
-                         for (let i = block.range[0]; i <= block.range[1]; i++) {
-                             appendImage(container, folderName, title, i);
-                         }
-                     }
-                 });
-             } else {
-                 for (let i = 1; i <= 100; i++) {
-                     appendImage(container, folderName, title, i);
-                 }
-             }
-         
-             window.scrollTo(0, 0);
-         }
+		function showProjectDetail(folderName, title) {
+			savedScrollPosition = window.scrollY;
+
+			document.getElementById('portfolio-list').style.display = 'none';
+			document.getElementById('portfolio-detail').style.display = 'block';
+			document.getElementById('detail-title').innerText = title;
+
+			const container = document.getElementById('detail-images-container');
+			container.innerHTML = '';
+			
+			// 컨테이너를 3단(PC) / 1단(모바일) 그리드로 설정
+			container.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 w-full';
+
+			const details = projectDetails[folderName];
+			// 현재 열려는 프로젝트에 비디오가 포함되어 있는지 확인
+			const hasVideos = details && details.some(block => block.type === 'videos');
+
+			// 텍스트(설명) 영역: 그리드 맨 위에 전체 너비로 표시되도록 래퍼 생성
+			const textWrapper = document.createElement('div');
+			textWrapper.className = 'md:col-span-3';
+			container.appendChild(textWrapper);
+
+			// 3개의 독립적인 열(기둥) 생성
+			const cols = [
+				document.createElement('div'), // 왼쪽 (0번 열: 비디오 전용 또는 분배용)
+				document.createElement('div'), // 가운데 (1번 열: 이미지)
+				document.createElement('div')  // 오른쪽 (2번 열: 이미지)
+			];
+			cols.forEach(col => {
+				col.className = 'flex flex-col gap-4'; // 각 기둥 안에서 요소들이 세로로 나열되도록 설정
+				container.appendChild(col);
+			});
+
+			let imageCounter = 0; // 이미지 분배용 카운터
+
+			if (details) {
+				details.forEach(block => {
+					if (block.type === 'text') {
+						const textDiv = document.createElement('div');
+						textDiv.className = 'project-section-text';
+						let htmlContent = `<h3 class="section-head">${block.title}</h3>`;
+						if (block.subtitle) htmlContent += `<p class="section-sub">${block.subtitle}</p>`;
+						if (block.bullets && block.bullets.length > 0) {
+							htmlContent += `<ul class="tech-list">`;
+							block.bullets.forEach(item => {
+								htmlContent += `<li><span class="tech-term">${item.term}:</span>${item.desc}</li>`;
+							});
+							htmlContent += `</ul>`;
+						}
+						textDiv.innerHTML = htmlContent;
+						textWrapper.appendChild(textDiv); // 텍스트는 맨 위 래퍼에 추가
+
+					} else if (block.type === 'videos') {
+						block.files.forEach(file => {
+							const video = document.createElement('video');
+							video.src = file;
+							video.className = 'detail-video';
+							video.autoplay = true;
+							video.muted = true;
+							video.loop = true;
+							video.playsInline = true;
+							video.controls = true;
+							video.onclick = function(e) { e.stopPropagation(); };
+							
+							// ★ 비디오는 무조건 왼쪽(0번) 기둥에 추가
+							cols[0].appendChild(video); 
+						});
+					} else if (block.type === 'images') {
+						for (let i = block.range[0]; i <= block.range[1]; i++) {
+							// 비디오가 있다면 이미지는 가운데(1번)와 오른쪽(2번)에만 번갈아 추가
+							const targetColIndex = hasVideos ? (imageCounter % 2) + 1 : (imageCounter % 3);
+							appendImage(cols[targetColIndex], folderName, title, i);
+							imageCounter++;
+						}
+					}
+				});
+			} else {
+				// details 데이터가 없는 프로젝트들 (비디오 없음)
+				for (let i = 1; i <= 100; i++) {
+					// 3개의 기둥(0, 1, 2번)에 골고루 분배
+					const targetColIndex = imageCounter % 3;
+					appendImage(cols[targetColIndex], folderName, title, i);
+					imageCounter++;
+				}
+			}
+
+			window.scrollTo(0, 0);
+		}
          
          function appendImage(container, folderName, title, index) {
              const img = document.createElement('img');
@@ -486,6 +556,11 @@
          function hideProjectDetail() {
              document.getElementById('portfolio-detail').style.display = 'none';
              document.getElementById('portfolio-list').style.display = 'block';
+             
+             // 목록으로 돌아갈 때 비디오 재생 중지 처리
+             const videos = document.querySelectorAll('#detail-images-container video');
+             videos.forEach(video => video.pause());
+
              window.scrollTo(0, savedScrollPosition);
          }
          
