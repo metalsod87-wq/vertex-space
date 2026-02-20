@@ -138,16 +138,6 @@
          align-items: center;
          animation: fadeIn 0.2s ease-out;
          }
-         #modal-image {
-         max-width: 90%;
-         max-height: 85vh;
-         border-radius: 2px;
-         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-         object-fit: contain;
-         filter: url(#strong-sharpen) contrast(1.05) saturate(1.05);
-         image-rendering: -webkit-optimize-contrast;
-		 transition: opacity 0.2s ease-in-out;
-         }
          /* 모달 네비게이션 버튼 */
          .modal-nav-btn {
          position: absolute;
@@ -291,6 +281,9 @@
              }
              .section-sub, .tech-list li {
                  color: #aaaaaa !important;
+             }
+			 #image-modal {
+                 padding: 0 1rem; /* 좌우에 약간의 여백을 줍니다 (취향껏 조절 가능) */
              }
          }
 		 
