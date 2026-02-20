@@ -249,7 +249,7 @@
             <div id="portfolio-list">
                <h2 class="section-title">Projects</h2>
                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <article class="project-card" onclick="showProjectDetail('VALHALLA SURVIVAL', 'Lionheart Studio - 발할라 서바이벌')">
+                  <article class="project-card" onclick="showProjectDetail('VALHALLA SURVIVAL', 'Lionheart Studio - 발할라 서바이벌')" onmouseenter="preloadProjectImages('VALHALLA SURVIVAL')">
                      <img src="./0_Thumnail/VALHALLA_SURVIVAL.jpg" alt="발할라 서바이벌" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Lionheart Studio</span>
@@ -269,7 +269,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('MIGALOO', 'KRAFTON - MIGALOO')">
+                  <article class="project-card" onclick="showProjectDetail('MIGALOO', 'KRAFTON - MIGALOO')" onmouseenter="preloadProjectImages('MIGALOO')">
                      <img src="./0_Thumnail/MIGALOO.jpg" alt="MIGALOO" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">KRAFTON</span>
@@ -288,7 +288,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('PUBG NEW STATE', 'KRAFTON - PUBG: NEW STATE')">
+                  <article class="project-card" onclick="showProjectDetail('PUBG NEW STATE', 'KRAFTON - PUBG: NEW STATE')" onmouseenter="preloadProjectImages('PUBG NEW STATE')">
                      <img src="./0_Thumnail/PUBG_NEW_STATE.jpg" alt="PUBG: NEW STATE" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">KRAFTON</span>
@@ -307,7 +307,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('PLAN 8', 'PEARL ABYSS - PLAN 8')">
+                  <article class="project-card" onclick="showProjectDetail('PLAN 8', 'PEARL ABYSS - PLAN 8')" onmouseenter="preloadProjectImages('PLAN 8')">
                      <img src="./0_Thumnail/PLAN_8.jpg" alt="PLAN 8" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">PEARL ABYSS</span>
@@ -327,7 +327,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('FOCUS ON YOU', 'SMILEGATE - FOCUS ON YOU (VR)')">
+                  <article class="project-card" onclick="showProjectDetail('FOCUS ON YOU', 'SMILEGATE - FOCUS ON YOU (VR)')" onmouseenter="preloadProjectImages('FOCUS ON YOU')">
                      <img src="./0_Thumnail/FOCUS_ON_YOU.jpg" alt="FOCUS ON YOU (VR)" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">SMILEGATE</span>
@@ -346,7 +346,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('Personal Works', 'Personal Works')">
+                  <article class="project-card" onclick="showProjectDetail('Personal Works', 'Personal Works')" onmouseenter="preloadProjectImages('Personal Works')">
                      <div class="aspect-video bg-gray-200 flex items-center justify-center text-gray-400 font-bold">CLICK TO VIEW IMAGES</div>
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Personal Works</span>
@@ -362,7 +362,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('ULTIMATE RACE', 'KOG - ULTIMATE RACE')">
+                  <article class="project-card" onclick="showProjectDetail('ULTIMATE RACE', 'KOG - ULTIMATE RACE')" onmouseenter="preloadProjectImages('ULTIMATE RACE')">
                      <img src="./0_Thumnail/ULTIMATE_RACE.jpg" alt="ULTIMATE RACE" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">KOG</span>
@@ -381,7 +381,7 @@
                         </ul>
                      </div>
                   </article>
-                  <article class="project-card" onclick="showProjectDetail('적인걸', 'Azworks - 영화 적인걸')">
+                  <article class="project-card" onclick="showProjectDetail('적인걸', 'Azworks - 영화 적인걸')" onmouseenter="preloadProjectImages('적인걸')">
                      <img src="./0_Thumnail/적인걸.jpg" alt="영화 적인걸'" class="w-full aspect-video object-cover border-b border-gray-200">
                      <div class="p-6">
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Azworks</span>
@@ -551,7 +551,31 @@ function showProjectDetail(folderName, title) {
         }, 50);
     });
 }
-         
+
+const preloadedProjects = new Set(); 
+
+function preloadProjectImages(folderName) {
+    // 이미 프리로드 한 적이 있거나, projectDetails에 정보가 없으면 취소
+    if (preloadedProjects.has(folderName) || !projectDetails[folderName]) return;
+    
+    preloadedProjects.add(folderName);
+
+    const details = projectDetails[folderName];
+    
+    details.forEach(block => {
+        if (block.type === 'images') {
+            // 전부 다 부르지 말고, 쾌적하게 첫 3장 정도만 미리 불러옵니다.
+            const startIdx = block.range[0];
+            const endIdx = Math.min(startIdx + 2, block.range[1]); 
+            
+            for (let i = startIdx; i <= endIdx; i++) {
+                const img = new Image();
+                img.src = `./${folderName}/${i}.jpg`; // 브라우저가 몰래 이미지를 다운로드해서 캐시에 저장함
+            }
+        }
+    });
+}
+
 function appendImage(container, folderName, title, index) {
     const img = document.createElement('img');
     img.src = `./${folderName}/${index}.jpg`;
