@@ -447,108 +447,129 @@
                },
                {
                   type: 'images',
-                  range: [1, 100] // 기존처럼 1~100번 이미지를 불러옵니다.
-               }
-            ]
-         };
-         
-		function showProjectDetail(folderName, title) {
-			savedScrollPosition = window.scrollY;
-
-			document.getElementById('portfolio-list').style.display = 'none';
-			document.getElementById('portfolio-detail').style.display = 'block';
-			document.getElementById('detail-title').innerText = title;
-
-			const container = document.getElementById('detail-images-container');
-			container.innerHTML = '';
-			
-			// 컨테이너를 3단(PC) / 1단(모바일) 그리드로 설정
-			container.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 w-full bg-black p-4 rounded-lg overflow-hidden';
-
-			const details = projectDetails[folderName];
-			// 현재 열려는 프로젝트에 비디오가 포함되어 있는지 확인
-			const hasVideos = details && details.some(block => block.type === 'videos');
-
-			// 텍스트(설명) 영역: 그리드 맨 위에 전체 너비로 표시되도록 래퍼 생성
-			const textWrapper = document.createElement('div');
-			textWrapper.className = 'md:col-span-3';
-			container.appendChild(textWrapper);
-
-			// 3개의 독립적인 열(기둥) 생성
-			const cols = [
-				document.createElement('div'), // 왼쪽 (0번 열: 비디오 전용 또는 분배용)
-				document.createElement('div'), // 가운데 (1번 열: 이미지)
-				document.createElement('div')  // 오른쪽 (2번 열: 이미지)
-			];
-			cols.forEach(col => {
-				col.className = 'flex flex-col gap-0'; // 각 기둥 안에서 요소들이 세로로 나열되도록 설정
-				container.appendChild(col);
-			});
-
-			let imageCounter = 0; // 이미지 분배용 카운터
-
-			if (details) {
-				details.forEach(block => {
-					if (block.type === 'text') {
-						const textDiv = document.createElement('div');
-						textDiv.className = 'project-section-text';
-						let htmlContent = `<h3 class="section-head">${block.title}</h3>`;
-						if (block.subtitle) htmlContent += `<p class="section-sub">${block.subtitle}</p>`;
-						if (block.bullets && block.bullets.length > 0) {
-							htmlContent += `<ul class="tech-list">`;
-							block.bullets.forEach(item => {
-								htmlContent += `<li><span class="tech-term">${item.term}:</span>${item.desc}</li>`;
-							});
-							htmlContent += `</ul>`;
-						}
-						textDiv.innerHTML = htmlContent;
-						textWrapper.appendChild(textDiv); // 텍스트는 맨 위 래퍼에 추가
-
-					} else if (block.type === 'videos') {
-						block.files.forEach(file => {
-							const video = document.createElement('video');
-							video.src = file;
-							video.className = 'detail-video';
-							video.autoplay = true;
-							video.muted = true;
-							video.loop = true;
-							video.playsInline = true;
-							video.controls = true;
-							video.onclick = function(e) { e.stopPropagation(); };
-							
-							// ★ 비디오는 무조건 왼쪽(0번) 기둥에 추가
-							cols[0].appendChild(video); 
-						});
-					} else if (block.type === 'images') {
-						for (let i = block.range[0]; i <= block.range[1]; i++) {
-							// 비디오가 있다면 이미지는 가운데(1번)와 오른쪽(2번)에만 번갈아 추가
-							const targetColIndex = hasVideos ? (imageCounter % 2) + 1 : (imageCounter % 3);
-							appendImage(cols[targetColIndex], folderName, title, i);
-							imageCounter++;
-						}
-					}
-				});
-			} else {
-				// details 데이터가 없는 프로젝트들 (비디오 없음)
-				for (let i = 1; i <= 100; i++) {
-					// 3개의 기둥(0, 1, 2번)에 골고루 분배
-					const targetColIndex = imageCounter % 3;
-					appendImage(cols[targetColIndex], folderName, title, i);
-					imageCounter++;
+                  range: [1, 18]
 				}
-			}
+			],
+			// ★ 나머지 프로젝트들의 폴더명과 실제 이미지 개수 범위를 지정해 주세요.
+			'MIGALOO': [ { type: 'images', range: [1, 15] } ], 
+			'PUBG NEW STATE': [ { type: 'images', range: [1, 50] } ],
+			'PLAN 8': [ { type: 'images', range: [1, 33] } ],
+			'FOCUS ON YOU': [ { type: 'images', range: [1, 61] } ],
+			'Personal Works': [ { type: 'images', range: [1, 9] } ],
+			'ULTIMATE RACE': [ { type: 'images', range: [1, 40] } ],
+			'적인걸': [ { type: 'images', range: [1, 6] } ]
+		};
+         
+function showProjectDetail(folderName, title) {
+    savedScrollPosition = window.scrollY;
 
-			window.scrollTo(0, 0);
-		}
+    document.getElementById('portfolio-list').style.display = 'none';
+    document.getElementById('portfolio-detail').style.display = 'block';
+    document.getElementById('detail-title').innerText = title;
+
+    const container = document.getElementById('detail-images-container');
+    container.innerHTML = '';
+    
+    // 1. 처음에는 투명하게 숨겨서 계산 과정을 안 보이게 처리
+    container.style.opacity = '0';
+    container.style.transition = 'opacity 0.4s ease-in-out';
+    container.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 w-full bg-black p-4 rounded-lg overflow-hidden';
+
+    const details = projectDetails[folderName];
+    const hasVideos = details && details.some(block => block.type === 'videos');
+
+    // 2. DocumentFragment를 사용하여 화면 그리기 연산을 1번으로 압축
+    const fragment = document.createDocumentFragment();
+
+    const textWrapper = document.createElement('div');
+    textWrapper.className = 'md:col-span-3';
+    fragment.appendChild(textWrapper);
+
+    const cols = [
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div') 
+    ];
+    cols.forEach(col => {
+        col.className = 'flex flex-col gap-0';
+        fragment.appendChild(col);
+    });
+
+    let imageCounter = 0;
+
+    if (details) {
+        details.forEach(block => {
+            if (block.type === 'text') {
+                const textDiv = document.createElement('div');
+                textDiv.className = 'project-section-text';
+                let htmlContent = `<h3 class="section-head">${block.title}</h3>`;
+                if (block.subtitle) htmlContent += `<p class="section-sub">${block.subtitle}</p>`;
+                if (block.bullets && block.bullets.length > 0) {
+                    htmlContent += `<ul class="tech-list">`;
+                    block.bullets.forEach(item => {
+                        htmlContent += `<li><span class="tech-term">${item.term}:</span>${item.desc}</li>`;
+                    });
+                    htmlContent += `</ul>`;
+                }
+                textDiv.innerHTML = htmlContent;
+                textWrapper.appendChild(textDiv);
+
+            } else if (block.type === 'videos') {
+                block.files.forEach(file => {
+                    const video = document.createElement('video');
+                    video.src = file;
+                    video.className = 'detail-video';
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.loop = true;
+                    video.playsInline = true;
+                    video.controls = true;
+                    video.onclick = function(e) { e.stopPropagation(); };
+                    
+                    cols[0].appendChild(video); 
+                });
+            } else if (block.type === 'images') {
+                for (let i = block.range[0]; i <= block.range[1]; i++) {
+                    const targetColIndex = hasVideos ? (imageCounter % 2) + 1 : (imageCounter % 3);
+                    appendImage(cols[targetColIndex], folderName, title, i);
+                    imageCounter++;
+                }
+            }
+        });
+    } 
+
+    // 3. 조립된 파편(Fragment)을 실제 DOM에 한 번에 추가
+    container.appendChild(fragment);
+
+    // 최상단으로 스크롤 이동
+    window.scrollTo(0, 0);
+
+    // 4. 브라우저가 레이아웃을 계산할 아주 짧은 시간을 준 뒤 부드럽게 나타나게 함
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            container.style.opacity = '1';
+        }, 50);
+    });
+}
          
 function appendImage(container, folderName, title, index) {
     const img = document.createElement('img');
     img.src = `./${folderName}/${index}.jpg`;
     img.className = 'detail-image';
     img.alt = `${title} Image ${index}`;
-    
-    // ★ 추가된 부분: 이미지에 원래 순서(index)를 저장합니다.
     img.dataset.index = index; 
+    
+    img.loading = 'lazy'; 
+    img.decoding = 'async'; 
+
+    // ★ 추가된 부분: 이미지가 완전히 로드되기 전까지는 투명하게 처리
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.4s ease-in-out';
+    
+    // ★ 추가된 부분: 이미지가 성공적으로 로드되면 부드럽게 나타남
+    img.onload = function() {
+        this.style.opacity = '1';
+    };
 
     img.onerror = function() {
         if (this.src.endsWith('.jpg')) {
@@ -564,7 +585,7 @@ function appendImage(container, folderName, title, index) {
     };
 
     container.appendChild(img);
-}         
+}
          function hideProjectDetail() {
              document.getElementById('portfolio-detail').style.display = 'none';
              document.getElementById('portfolio-list').style.display = 'block';
