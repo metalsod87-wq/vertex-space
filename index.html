@@ -77,10 +77,15 @@
          margin-bottom: 1rem;
          break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
          }
-         .detail-image {
-         transition: all 0.3s ease; /* 부드러운 변화를 위해 추가 */
-         filter: brightness(0.9); /* 평소에는 살짝 어둡게 (선택사항) */
-         }
+		.detail-image {
+					 display: block;
+					 width: 100%;
+					 margin-bottom: 1rem;
+					 break-inside: avoid; 
+					 /* 기존 transition: all... 을 아래처럼 filter만 부드럽게 바뀌도록 수정합니다 */
+					 transition: filter 0.3s ease; 
+					 filter: brightness(0.9); 
+				 }
          .detail-image:hover {
          filter: brightness(1.1); /* 마우스를 올리면 밝게 */
          cursor: pointer;
@@ -138,6 +143,7 @@
          object-fit: contain;
          filter: url(#strong-sharpen) contrast(1.05) saturate(1.05);
          image-rendering: -webkit-optimize-contrast;
+		 transition: opacity 0.2s ease-in-out;
          }
          /* 모달 네비게이션 버튼 */
          .modal-nav-btn {
@@ -694,10 +700,19 @@
          
          updateModalImage();
          modal.style.display = 'flex';
+		 
+		 updateModalImage();
+		 modal.style.display = 'flex';
+             
+		 // 이 부분을 추가해 주세요: 뒷배경 스크롤 방지
+		 document.body.style.overflow = 'hidden';
+		 
          }         
 		function closeModal() {
-					 // 꼬이는 원인이었던 메타 태그 제어 코드를 지우고 숨기기만 합니다.
 					 document.getElementById('image-modal').style.display = 'none';
+					 
+					 // 이 부분을 추가해 주세요: 뒷배경 스크롤 원상복구
+					 document.body.style.overflow = ''; 
 				 }
          
          function changeImage(direction, event) {
