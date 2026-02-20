@@ -79,13 +79,23 @@
 			break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
 		}
 
+		.detail-image {
+			transition: all 0.3s ease; /* 부드러운 변화를 위해 추가 */
+			filter: brightness(1); /* 평소에는 살짝 어둡게 (선택사항) */
+		}
+
+		.detail-image:hover {
+			filter: brightness(1.2); /* 마우스를 올리면 밝게 */
+			cursor: pointer;
+		}
+
 		.detail-video {
 			width: 100%;
-			max-height: 85vh; /* 영상이 화면 높이를 넘지 않도록 제한 */
-			object-fit: cover;
+			max-height: 50vh;
+			object-fit: contain; /* contain 영상 전체 다 보임 cover 위 아래 잘림 */
 			border-radius: 0.5rem;
 			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-			background-color: #000000;
+			background-color: #000000; /* 영상 비율 때문에 남는 빈 공간을 자연스러운 검은색 레터박스로 채웁니다 */
 			outline: none;
 		}
 
@@ -453,7 +463,7 @@
 			container.innerHTML = '';
 			
 			// 컨테이너를 3단(PC) / 1단(모바일) 그리드로 설정
-			container.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 w-full';
+			container.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 w-full bg-black p-4 rounded-lg overflow-hidden';
 
 			const details = projectDetails[folderName];
 			// 현재 열려는 프로젝트에 비디오가 포함되어 있는지 확인
@@ -471,7 +481,7 @@
 				document.createElement('div')  // 오른쪽 (2번 열: 이미지)
 			];
 			cols.forEach(col => {
-				col.className = 'flex flex-col gap-4'; // 각 기둥 안에서 요소들이 세로로 나열되도록 설정
+				col.className = 'flex flex-col gap-0'; // 각 기둥 안에서 요소들이 세로로 나열되도록 설정
 				container.appendChild(col);
 			});
 
@@ -531,28 +541,30 @@
 			window.scrollTo(0, 0);
 		}
          
-         function appendImage(container, folderName, title, index) {
-             const img = document.createElement('img');
-             img.src = `./${folderName}/${index}.jpg`;
-             img.className = 'detail-image';
-             img.alt = `${title} Image ${index}`;
-         
-             img.onerror = function() {
-                 if (this.src.endsWith('.jpg')) {
-                     this.src = `./${folderName}/${index}.png`;
-                 } else {
-                     this.style.display = 'none';
-                     this.classList.remove('detail-image');
-                 }
-             };
-         
-             img.onclick = function() {
-                 openModal(this.src);
-             };
-         
-             container.appendChild(img);
-         }
-         
+function appendImage(container, folderName, title, index) {
+    const img = document.createElement('img');
+    img.src = `./${folderName}/${index}.jpg`;
+    img.className = 'detail-image';
+    img.alt = `${title} Image ${index}`;
+    
+    // ★ 추가된 부분: 이미지에 원래 순서(index)를 저장합니다.
+    img.dataset.index = index; 
+
+    img.onerror = function() {
+        if (this.src.endsWith('.jpg')) {
+            this.src = `./${folderName}/${index}.png`;
+        } else {
+            this.style.display = 'none';
+            this.classList.remove('detail-image');
+        }
+    };
+
+    img.onclick = function() {
+        openModal(this.src);
+    };
+
+    container.appendChild(img);
+}         
          function hideProjectDetail() {
              document.getElementById('portfolio-detail').style.display = 'none';
              document.getElementById('portfolio-list').style.display = 'block';
@@ -565,24 +577,28 @@
          }
          
          // 모달 관련 기능
-         function openModal(src) {
-             const modal = document.getElementById('image-modal');
-             const images = document.querySelectorAll('.detail-image');
-             galleryImages = [];
-         
-             images.forEach((img) => {
-                 if (img.style.display !== 'none') {
-                     galleryImages.push(img.src);
-                 }
-             });
-         
-             currentImageIndex = galleryImages.findIndex(url => url === src);
-             if (currentImageIndex === -1) currentImageIndex = 0;
-         
-             updateModalImage();
-             modal.style.display = 'flex';
-         }
-         
+function openModal(src) {
+    const modal = document.getElementById('image-modal');
+    // 노드리스트를 배열로 변환합니다.
+    const images = Array.from(document.querySelectorAll('.detail-image'));
+    galleryImages = [];
+
+    // ★ 수정된 부분: display가 none이 아닌 이미지를 필터링한 후, dataset.index를 기준으로 오름차순 정렬합니다.
+    const sortedImages = images
+        .filter(img => img.style.display !== 'none')
+        .sort((a, b) => parseInt(a.dataset.index) - parseInt(b.dataset.index));
+
+    // 정렬된 순서대로 galleryImages 배열에 담습니다.
+    sortedImages.forEach((img) => {
+        galleryImages.push(img.src);
+    });
+
+    currentImageIndex = galleryImages.findIndex(url => url === src);
+    if (currentImageIndex === -1) currentImageIndex = 0;
+
+    updateModalImage();
+    modal.style.display = 'flex';
+}         
          function closeModal() {
              document.getElementById('image-modal').style.display = 'none';
          }
