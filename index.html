@@ -80,10 +80,11 @@
 		.detail-image {
 					 display: block;
 					 width: 100%;
+					 height: auto; /* 이미지가 위아래로 찌그러지거나 늘어나는 것 방지 */
 					 margin-bottom: 1rem;
-					 break-inside: avoid; 
-					 /* 기존 transition: all... 을 아래처럼 filter만 부드럽게 바뀌도록 수정합니다 */
-					 transition: filter 0.3s ease; 
+					 break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
+					 /* 'all' 대신 색상(filter)과 투명도(opacity)만 부드럽게 변하도록 콕 집어 설정! */
+					 transition: filter 0.3s ease, opacity 0.4s ease-in-out !important; 
 					 filter: brightness(0.9); 
 				 }
          .detail-image:hover {
@@ -517,99 +518,84 @@
          '적인걸': [ { type: 'images', range: [1, 6] } ]
          };
          
-         function showProjectDetail(folderName, title) {
-         savedScrollPosition = window.scrollY;
+			function showProjectDetail(folderName, title) {
+             savedScrollPosition = window.scrollY;
+             
+             document.getElementById('portfolio-list').style.display = 'none';
+             document.getElementById('portfolio-detail').style.display = 'block';
+             document.getElementById('detail-title').innerText = title;
+             
+             const container = document.getElementById('detail-images-container');
+             container.innerHTML = '';
+             
+             container.style.opacity = '0';
+             container.style.transition = 'opacity 0.4s ease-in-out';
+             
+             // 자바스크립트 기둥 3개 꼼수 대신, 순수 CSS 다단(columns) 기능 사용
+             container.className = 'columns-1 sm:columns-2 md:columns-3 gap-3 sm:gap-4 w-full bg-black p-0 sm:p-4 rounded-none sm:rounded-lg';
+             
+             const details = projectDetails[folderName];
+             const fragment = document.createDocumentFragment();
+             
+             // 텍스트 설명 영역
+             const textWrapper = document.createElement('div');
+             textWrapper.style.columnSpan = 'all'; // 텍스트는 단을 나누지 않고 가로 전체 차지
+             textWrapper.style.WebkitColumnSpan = 'all';
+             fragment.appendChild(textWrapper);
+             
+             if (details) {
+                 details.forEach(block => {
+                     if (block.type === 'text') {
+                         const textDiv = document.createElement('div');
+                         textDiv.className = 'project-section-text';
+                         let htmlContent = `<h3 class="section-head">${block.title}</h3>`;
+                         if (block.subtitle) htmlContent += `<p class="section-sub">${block.subtitle}</p>`;
+                         if (block.bullets && block.bullets.length > 0) {
+                             htmlContent += `<ul class="tech-list">`;
+                             block.bullets.forEach(item => {
+                                 htmlContent += `<li><span class="tech-term">${item.term}:</span>${item.desc}</li>`;
+                             });
+                             htmlContent += `</ul>`;
+                         }
+                         textDiv.innerHTML = htmlContent;
+                         textWrapper.appendChild(textDiv);
+             
+                     } else if (block.type === 'videos') {
+                         block.files.forEach(file => {
+                             const video = document.createElement('video');
+                             video.src = file;
+                             video.className = 'detail-video';
+                             video.style.breakInside = 'avoid'; // 비디오 쪼개짐 방지
+                             video.autoplay = true;
+                             video.muted = true;
+                             video.loop = true;
+                             video.playsInline = true;
+                             video.controls = true;
+                             video.onclick = function(e) { e.stopPropagation(); };
+                             
+                             fragment.appendChild(video); 
+                         });
+                     } else if (block.type === 'images') {
+                         for (let i = block.range[0]; i <= block.range[1]; i++) {
+                             // 기둥 계산 없이 순서대로 바로 부착!
+                             appendImage(fragment, folderName, title, i);
+                         }
+                     }
+                 });
+             } 
+             
+             container.appendChild(fragment);
+             
+             window.scrollTo(0, 0);
+             
+             requestAnimationFrame(() => {
+                 setTimeout(() => {
+                     container.style.opacity = '1';
+                 }, 50);
+             });
+         }         
          
-         document.getElementById('portfolio-list').style.display = 'none';
-         document.getElementById('portfolio-detail').style.display = 'block';
-         document.getElementById('detail-title').innerText = title;
-         
-         const container = document.getElementById('detail-images-container');
-         container.innerHTML = '';
-         
-         // 1. 처음에는 투명하게 숨겨서 계산 과정을 안 보이게 처리
-         container.style.opacity = '0';
-         container.style.transition = 'opacity 0.4s ease-in-out';
-         container.className = 'grid grid-cols-1 md:grid-cols-3 gap-1 sm:gap-3 w-full bg-black p-0 sm:p-4 rounded-none sm:rounded-lg overflow-hidden';
-         
-         const details = projectDetails[folderName];
-         const hasVideos = details && details.some(block => block.type === 'videos');
-         
-         // 2. DocumentFragment를 사용하여 화면 그리기 연산을 1번으로 압축
-         const fragment = document.createDocumentFragment();
-         
-         const textWrapper = document.createElement('div');
-         textWrapper.className = 'md:col-span-3';
-         fragment.appendChild(textWrapper);
-         
-         const cols = [
-         document.createElement('div'),
-         document.createElement('div'),
-         document.createElement('div') 
-         ];
-         cols.forEach(col => {
-         col.className = 'flex flex-col gap-0';
-         fragment.appendChild(col);
-         });
-         
-         let imageCounter = 0;
-         
-         if (details) {
-         details.forEach(block => {
-            if (block.type === 'text') {
-                const textDiv = document.createElement('div');
-                textDiv.className = 'project-section-text';
-                let htmlContent = `<h3 class="section-head">${block.title}</h3>`;
-                if (block.subtitle) htmlContent += `<p class="section-sub">${block.subtitle}</p>`;
-                if (block.bullets && block.bullets.length > 0) {
-                    htmlContent += `<ul class="tech-list">`;
-                    block.bullets.forEach(item => {
-                        htmlContent += `<li><span class="tech-term">${item.term}:</span>${item.desc}</li>`;
-                    });
-                    htmlContent += `</ul>`;
-                }
-                textDiv.innerHTML = htmlContent;
-                textWrapper.appendChild(textDiv);
-         
-            } else if (block.type === 'videos') {
-                block.files.forEach(file => {
-                    const video = document.createElement('video');
-                    video.src = file;
-                    video.className = 'detail-video';
-                    video.autoplay = true;
-                    video.muted = true;
-                    video.loop = true;
-                    video.playsInline = true;
-                    video.controls = true;
-                    video.onclick = function(e) { e.stopPropagation(); };
-                    
-                    cols[0].appendChild(video); 
-                });
-            } else if (block.type === 'images') {
-                for (let i = block.range[0]; i <= block.range[1]; i++) {
-                    const targetColIndex = hasVideos ? (imageCounter % 2) + 1 : (imageCounter % 3);
-                    appendImage(cols[targetColIndex], folderName, title, i);
-                    imageCounter++;
-                }
-            }
-         });
-         } 
-         
-         // 3. 조립된 파편(Fragment)을 실제 DOM에 한 번에 추가
-         container.appendChild(fragment);
-         
-         // 최상단으로 스크롤 이동
-         window.scrollTo(0, 0);
-         
-         // 4. 브라우저가 레이아웃을 계산할 아주 짧은 시간을 준 뒤 부드럽게 나타나게 함
-         requestAnimationFrame(() => {
-         setTimeout(() => {
-            container.style.opacity = '1';
-         }, 50);
-         });
-         }
-         
-         const preloadedProjects = new Set(); 
+		 const preloadedProjects = new Set(); 
          
          function preloadProjectImages(folderName) {
          // 이미 프리로드 한 적이 있거나, projectDetails에 정보가 없으면 취소
