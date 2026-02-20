@@ -228,9 +228,40 @@
          color: #374151;
          margin-right: 0.3rem;
          }
+		 
+/* --- 모바일 화면 최적화 --- */
+         @media (max-width: 639px) {
+             /* 1. 드래그 시 통통 튀는 현상(바운스 스크롤) 제거 */
+             html, body {
+                 overscroll-behavior-y: none;
+             }
+             /* 2. 전체 여백 제거 (검은색 화면 꽉 차게) */
+             body {
+                 padding: 0 !important;
+             }
+             .container {
+                 padding: 0 !important;
+                 border-radius: 0 !important;
+             }
+             /* 리스트 화면에서는 기본 여백 유지 */
+             #portfolio-list {
+                 padding: 1rem 1.25rem;
+             }
+             /* 상세 페이지 상단(뒤로가기) 여백 조정 */
+             #portfolio-detail .py-4.border-b {
+                 padding: 1rem 1.25rem;
+                 margin-bottom: 0;
+                 border-bottom: none;
+             }
+             /* 3. 모바일에서 동영상 완전 숨김 */
+             .detail-video {
+                 display: none !important;
+             }
+         }
+		 
       </style>
    </head>
-   <body class="p-4 sm:p-8">
+   <body class="sm:p-8">
       <svg style="display: none;">
          <defs>
             <filter id="strong-sharpen">
@@ -467,7 +498,7 @@
          // 1. 처음에는 투명하게 숨겨서 계산 과정을 안 보이게 처리
          container.style.opacity = '0';
          container.style.transition = 'opacity 0.4s ease-in-out';
-         container.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 w-full bg-black p-4 rounded-lg overflow-hidden';
+         container.className = 'grid grid-cols-1 md:grid-cols-3 gap-1 sm:gap-3 w-full bg-black p-0 sm:p-4 rounded-none sm:rounded-lg overflow-hidden';
          
          const details = projectDetails[folderName];
          const hasVideos = details && details.some(block => block.type === 'videos');
