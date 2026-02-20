@@ -727,12 +727,23 @@
              updateModalImage();
          }
          
-         function updateModalImage() {
-             const modalImg = document.getElementById('modal-image');
-             if (galleryImages.length > 0) {
-                 modalImg.src = galleryImages[currentImageIndex];
-             }
-         }
+		function updateModalImage() {
+					 const modalImg = document.getElementById('modal-image');
+					 if (galleryImages.length > 0) {
+						 // 1. 현재 이미지를 부드럽게 투명하게 만듭니다.
+						 modalImg.style.opacity = '0';
+						 
+						 // 2. 0.2초(200ms) 뒤에 이미지를 교체하고 다시 보이게 합니다.
+						 setTimeout(() => {
+							 modalImg.src = galleryImages[currentImageIndex];
+							 
+							 // 새 이미지가 완전히 불러와지면 다시 선명하게 나타납니다.
+							 modalImg.onload = () => {
+								 modalImg.style.opacity = '1';
+							 };
+						 }, 200);
+					 }
+				 }
          
          document.addEventListener('keydown', function(event) {
              const modal = document.getElementById('image-modal');
