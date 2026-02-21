@@ -3,9 +3,9 @@
    <head>
       <meta name="robots" content="noindex, nofollow">
       <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
       <title>강동민 3D Environment Art 포트폴리오</title>
-	<script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.tailwindcss.com"></script>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
       <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
       <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,16 +79,16 @@
          margin-bottom: 1rem;
          break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
          }
-		.detail-image {
-					 display: block;
-					 width: 100%;
-					 height: auto; /* 이미지가 위아래로 찌그러지거나 늘어나는 것 방지 */
-					 margin-bottom: 1rem;
-					 break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
-					 /* 'all' 대신 색상(filter)과 투명도(opacity)만 부드럽게 변하도록 콕 집어 설정! */
-					 transition: filter 0.3s ease, opacity 0.4s ease-in-out !important; 
-					 filter: brightness(0.9); 
-				 }
+         .detail-image {
+         display: block;
+         width: 100%;
+         height: auto; /* 이미지가 위아래로 찌그러지거나 늘어나는 것 방지 */
+         margin-bottom: 1rem;
+         break-inside: avoid; /* 요소가 잘리지 않도록 방지 */
+         /* 'all' 대신 색상(filter)과 투명도(opacity)만 부드럽게 변하도록 콕 집어 설정! */
+         transition: filter 0.3s ease, opacity 0.4s ease-in-out !important; 
+         filter: brightness(0.9); 
+         }
          .detail-image:hover {
          filter: brightness(1.1); /* 마우스를 올리면 밝게 */
          cursor: pointer;
@@ -227,107 +227,126 @@
          color: #374151;
          margin-right: 0.3rem;
          }
-		 
-/* --- 모바일 화면 최적화 --- */
+         /* --- 모바일 화면 최적화 --- */
          @media (max-width: 639px) {
-             /* 1. 드래그 시 통통 튀는 현상(바운스 스크롤) 제거 */
-             html, body {
-                 overscroll-behavior-y: none;
-             }
-             /* 2. 전체 여백 제거 (검은색 화면 꽉 차게) */
-             body {
-                 padding: 0 !important;
-             }
-             .container {
-                 padding: 0 !important;
-                 border-radius: 0 !important;
-             }
-             /* 리스트 화면에서는 기본 여백 유지 */
-             #portfolio-list {
-                 padding: 1rem 1.25rem;
-             }
-             /* 상세 페이지 상단(뒤로가기) 여백 조정 */
-             #portfolio-detail .py-4.border-b {
-                 padding: 1rem 1.25rem;
-                 margin-bottom: 0;
-                 border-bottom: none;
-             }
-             /* 3. 모바일에서 동영상 완전 숨김 */
-             .detail-video {
-                 display: none !important;
-             }
-			 /* 모바일 다크 모드 (배경 검은색, 글자 흰색 통일) */
-             body, .container {
-                 background-color: #000000 !important;
-                 color: #ffffff !important;
-             }
-             .section-title {
-                 color: #ffffff !important;
-                 border-bottom-color: #333333 !important;
-             }
-             .project-card {
-                 background-color: #111111 !important;
-                 border-color: #333333 !important;
-             }
-             .project-card h3 {
-                 color: #ffffff !important;
-             }
-             .back-btn {
-                 background-color: #222222 !important;
-                 color: #ffffff !important;
-             }
-             #detail-title, .section-head, .tech-term {
-                 color: #ffffff !important;
-             }
-             .section-sub, .tech-list li {
-                 color: #aaaaaa !important;
-             }
-			 #image-modal {
-                 padding: 0 1rem; /* 좌우에 약간의 여백을 줍니다 (취향껏 조절 가능) */
-             }
-			 .swiper-button-next, 
-			.swiper-button-prev,
-			.modal-nav-btn {
-				display: none !important;
-			}
+         /* 1. 드래그 시 통통 튀는 현상(바운스 스크롤) 제거 */
+         html, body {
+         overscroll-behavior-y: none;
          }
-		 
+         /* 2. 전체 여백 제거 (검은색 화면 꽉 차게) */
+         body {
+         padding: 0 !important;
+         }
+         .container {
+         padding: 0 !important;
+         border-radius: 0 !important;
+         }
+         /* 리스트 화면에서는 기본 여백 유지 */
+         #portfolio-list {
+         padding: 1rem 1.25rem;
+         }
+         /* 상세 페이지 상단(뒤로가기) 여백 조정 */
+         #portfolio-detail .py-4.border-b {
+         padding: 1rem 1.25rem;
+         margin-bottom: 0;
+         border-bottom: none;
+         }
+         /* 3. 모바일에서 동영상 완전 숨김 */
+         .detail-video {
+         display: none !important;
+         }
+         /* 모바일 다크 모드 (배경 검은색, 글자 흰색 통일) */
+         body, .container {
+         background-color: #000000 !important;
+         color: #ffffff !important;
+         }
+         .section-title {
+         color: #ffffff !important;
+         border-bottom-color: #333333 !important;
+         }
+         .project-card {
+         background-color: #111111 !important;
+         border-color: #333333 !important;
+         }
+         .project-card h3 {
+         color: #ffffff !important;
+         }
+         .back-btn {
+         background-color: #222222 !important;
+         color: #ffffff !important;
+         }
+         #detail-title, .section-head, .tech-term {
+         color: #ffffff !important;
+         }
+         .section-sub, .tech-list li {
+         color: #aaaaaa !important;
+         }
+         #image-modal {
+         padding: 0 1rem; /* 좌우에 약간의 여백을 줍니다 (취향껏 조절 가능) */
+         }
+         .swiper-button-next, 
+         .swiper-button-prev,
+         .modal-nav-btn {
+         display: none !important;
+         }
+         }
+         /* --- Swiper 갤러리 스타일 --- */
 /* --- Swiper 갤러리 스타일 --- */
-         .swiper {
-             width: 100%;
-             height: 100%;
-         }
-         .swiper-slide {
-             text-align: center;
-             font-size: 18px;
-             background: transparent; /* 배경 투명하게 */
-             display: flex;
-             justify-content: center;
-             align-items: center;
-         }
-         .swiper-slide img {
-             display: block;
-             width: auto;
-             height: auto;
-             max-width: 100%;
-             max-height: 90vh; /* 상하 여백 확보 */
-             object-fit: contain;
-             border-radius: 2px;
-             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-             /* 기존 필터 유지 */
-             filter: url(#strong-sharpen) contrast(1.05) saturate(1.05);
-             image-rendering: -webkit-optimize-contrast;
-         }
-         /* 기본 화살표 색상 흰색으로 변경 */
-         .swiper-button-next, .swiper-button-prev {
-             color: #ffffff !important;
-         }
-         /* 페이지네이션 점 색상 변경 */
-         .swiper-pagination-bullet-active {
-             background: #ffffff !important;
-         }
-		 
-		 
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Swiper Zoom 완벽 균형 버전 */
+.swiper-zoom-container {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: visible !important;
+    transform: translateZ(0);
+    width: 100% !important;
+    height: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: auto !important;
+    height: auto !important;
+    max-width: 94vw !important;     /* PC에서도 예쁘게 화면에 딱 맞음 */
+    max-height: 92vh !important;    /* 위아래 여백 살짝 남겨서 압도적이지 않게 */
+    object-fit: contain;
+    border-radius: 2px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    filter: url(#strong-sharpen) contrast(1.05) saturate(1.05);
+    image-rendering: -webkit-optimize-contrast;
+    
+    /* 확대 시 부드러움 */
+    transition: transform 0.08s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* 버벅임 방지 */
+.swiper-slide .swiper-zoom-container img {
+    contain: layout paint;
+}
+
+/* 기본 화살표 색상 */
+.swiper-button-next, .swiper-button-prev {
+    color: #ffffff !important;
+}
+.swiper-pagination-bullet-active {
+    background: #ffffff !important;
+}
       </style>
    </head>
    <body class="sm:p-8">
@@ -513,17 +532,17 @@
             </div>
          </main>
       </div>
-	<div id="image-modal">
+      <div id="image-modal">
          <span class="modal-close" onclick="closeModal()">&times;</span>
          <div class="swiper mySwiper" onclick="event.stopPropagation()">
             <div class="swiper-wrapper" id="swiper-wrapper">
-               </div>
+            </div>
             <div class="swiper-button-next modal-nav-btn"></div>
             <div class="swiper-button-prev modal-nav-btn"></div>
             <div class="swiper-pagination"></div>
          </div>
       </div>
-<script>
+      <script>
          // 전역 변수
          let savedScrollPosition = 0;
          // ★ Swiper 인스턴스를 담을 변수 추가
@@ -543,50 +562,55 @@
          
          // 페이지 로드 시 Swiper 초기화
          window.addEventListener('load', function() {
-             swiper = new Swiper(".mySwiper", {
-                 slidesPerView: 1,
-                 spaceBetween: 30, // 슬라이드 간 간격 (취향껏 조절)
-                 loop: true, // 무한 루프
-				 zoom: {
-						maxRatio: 3, // 최대 3배까지 확대 가능
-						minRatio: 1,
-						},
-                 keyboard: {
-                     enabled: true,
-                 },
-                 pagination: {
-                     el: ".swiper-pagination",
-                     clickable: true,
-                     dynamicBullets: true, // 점이 많으면 줄여서 보여줌
-                 },
-                 navigation: {
-                     nextEl: ".swiper-button-next",
-                     prevEl: ".swiper-button-prev",
-                 },
-                 // 터치 감도 설정 (기본값도 좋지만 더 민감하게 하려면 조절)
-                 touchRatio: 1,
-                 touchAngle: 45,
-				 preloadImages: false,     // lazy loading과 함께 사용
-				lazy: true,
-				watchSlidesProgress: true,
-				touchRatio: 1.5,          // 모바일에서 더 부드럽게
-             });
-			 // ★ 모바일용 미리 불러오기 (터치 시작 시점 감지) ★
-			const projectCards = document.querySelectorAll('.project-card');
-			projectCards.forEach(card => {
-				card.addEventListener('touchstart', function() {
-					// 카드에 적혀있는 onmouseenter 속성에서 프로젝트 이름만 쏙 빼와서 미리 로딩 실행
-					const onMouseEnterAttr = this.getAttribute('onmouseenter');
-					if (onMouseEnterAttr) {
-						const match = onMouseEnterAttr.match(/'([^']+)'/);
-						if (match && match[1]) {
-							preloadProjectImages(match[1]);
-						}
-					}
-				}, { passive: true }); // passive: true를 넣으면 모바일 스크롤 버벅임이 방지됩니다.
-			});
+swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    loop: true,
+    
+    cssMode: true,
+    resistanceRatio: 0,
+    touchRatio: 1.8,
+    speed: 300,
+    
+    zoom: {
+        maxRatio: 6,           // 너무 과도하게 확대되지 않도록 6으로 조정
+        minRatio: 1,
+        initialRatio: 1,       // ★ 핵심! 처음에는 항상 화면에 딱 맞게 시작
+        toggle: true,
+        panOnMouseMove: true,
+        containerClass: 'swiper-zoom-container'
+    },
+    
+    keyboard: { enabled: true },
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+        dynamicBullets: true,
+    },
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+    touchEventsTarget: 'wrapper',
+    touchRatio: 1.8,
+    touchAngle: 45,
+});
+         // ★ 모바일용 미리 불러오기 (터치 시작 시점 감지) ★
+         const projectCards = document.querySelectorAll('.project-card');
+         projectCards.forEach(card => {
+         card.addEventListener('touchstart', function() {
+         // 카드에 적혀있는 onmouseenter 속성에서 프로젝트 이름만 쏙 빼와서 미리 로딩 실행
+         const onMouseEnterAttr = this.getAttribute('onmouseenter');
+         if (onMouseEnterAttr) {
+         const match = onMouseEnterAttr.match(/'([^']+)'/);
+         if (match && match[1]) {
+         preloadProjectImages(match[1]);
+         }
+         }
+         }, { passive: true }); // passive: true를 넣으면 모바일 스크롤 버벅임이 방지됩니다.
          });
-
+         });
+         
          // ... (showProjectDetail 함수는 아까 수정한 최신 버전 그대로 두세요) ...
          function showProjectDetail(folderName, title) {
              savedScrollPosition = window.scrollY;
@@ -654,11 +678,11 @@
              };
              // 클릭 시 Swiper 모달 열기
              img.onclick = function() {
-				openModal(this);   // ← 문자열이 아닌 img 요소 자체를 전달
-				};
+         openModal(this);   // ← 문자열이 아닌 img 요소 자체를 전달
+         };
              container.appendChild(img);
          }
-
+         
          function hideProjectDetail() {
              document.getElementById('portfolio-detail').style.display = 'none';
              document.getElementById('portfolio-list').style.display = 'block';
@@ -667,55 +691,55 @@
              window.scrollTo(0, savedScrollPosition);
          }
          
-// ★ Swiper를 이용한 모달 열기 함수 (수정됨) ★
-function openModal(clickedImg) {
-    const modal = document.getElementById('image-modal');
-    
-    // 현재 상세 페이지의 이미지들만 정확히 가져오기 (다른 프로젝트 영향 방지)
-    const images = Array.from(document.querySelectorAll('#detail-images-container .detail-image'))
-        .filter(img => img.style.display !== 'none' && img.offsetParent !== null);
-
-    // 클릭한 이미지의 정확한 위치 찾기 (이게 핵심!)
-    const initialSlideIndex = images.findIndex(img => img === clickedImg);
-    
-    if (initialSlideIndex === -1) {
-        console.error("클릭한 이미지를 목록에서 찾을 수 없습니다.");
-        return;
-    }
-
-    // 슬라이드 HTML 생성
-    const slidesHTML = images.map(img => `
-        <div class="swiper-slide">
+         // ★ Swiper를 이용한 모달 열기 함수 (수정됨) ★
+         function openModal(clickedImg) {
+         const modal = document.getElementById('image-modal');
+         
+         // 현재 상세 페이지의 이미지들만 정확히 가져오기 (다른 프로젝트 영향 방지)
+         const images = Array.from(document.querySelectorAll('#detail-images-container .detail-image'))
+         .filter(img => img.style.display !== 'none' && img.offsetParent !== null);
+         
+         // 클릭한 이미지의 정확한 위치 찾기 (이게 핵심!)
+         const initialSlideIndex = images.findIndex(img => img === clickedImg);
+         
+         if (initialSlideIndex === -1) {
+         console.error("클릭한 이미지를 목록에서 찾을 수 없습니다.");
+         return;
+         }
+         
+         // 슬라이드 HTML 생성
+         const slidesHTML = images.map(img => `
+         <div class="swiper-slide">
             <div class="swiper-zoom-container">
                 <img src="${img.dataset.fullSrc || img.src}" 
                      alt="Gallery Image">
             </div>
-        </div>
-    `);
-
-    // 모달 열기
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-
-    if (swiper) {
-        swiper.removeAllSlides();
-        swiper.appendSlide(slidesHTML);
-        swiper.update();
-        
-        // 즉시 이동 (전환 효과 없이)
-        setTimeout(() => {
+         </div>
+         `);
+         
+         // 모달 열기
+         modal.style.display = 'flex';
+         document.body.style.overflow = 'hidden';
+         
+         if (swiper) {
+         swiper.removeAllSlides();
+         swiper.appendSlide(slidesHTML);
+         swiper.update();
+         
+         // 즉시 이동 (전환 효과 없이)
+         setTimeout(() => {
             swiper.slideToLoop(initialSlideIndex, 0, false);
-        }, 30);
-    } else {
-        console.error("Swiper가 초기화되지 않았습니다.");
-    }
-}
+         }, 30);
+         } else {
+         console.error("Swiper가 초기화되지 않았습니다.");
+         }
+         }
          function closeModal() {
              document.getElementById('image-modal').style.display = 'none';
              document.body.style.overflow = ''; 
          }
-
+         
          // 키보드 이벤트는 Swiper가 알아서 처리하므로 삭제해도 됩니다.
       </script>
-	  </body>
+   </body>
 </html>
