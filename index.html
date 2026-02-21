@@ -3,7 +3,7 @@
    <head>
       <meta name="robots" content="noindex, nofollow">
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
       <title>강동민 3D Environment Art 포트폴리오</title>
 	<script src="https://cdn.tailwindcss.com"></script>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -547,6 +547,10 @@
                  slidesPerView: 1,
                  spaceBetween: 30, // 슬라이드 간 간격 (취향껏 조절)
                  loop: true, // 무한 루프
+				 zoom: {
+						maxRatio: 3, // 최대 3배까지 확대 가능
+						minRatio: 1,
+						},
                  keyboard: {
                      enabled: true,
                  },
@@ -675,8 +679,14 @@ function openModal(clickedSrc) {
         if (img.dataset.fullSrc === clickedSrc) {
             initialSlideIndex = index;
         }
-        slidesHTML.push(`<div class="swiper-slide"><img src="${img.dataset.fullSrc}" alt="Gallery Image"></div>`);
-    });
+		slidesHTML.push(`
+				<div class="swiper-slide">
+					<div class="swiper-zoom-container">
+						<img src="${img.dataset.fullSrc}" alt="Gallery Image">
+					</div>
+				</div>
+			`);
+		});
     
     // 3. 모달을 열고 스크롤을 잠급니다.
     modal.style.display = 'flex';
