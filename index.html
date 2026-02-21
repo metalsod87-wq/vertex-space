@@ -566,6 +566,10 @@
                  // 터치 감도 설정 (기본값도 좋지만 더 민감하게 하려면 조절)
                  touchRatio: 1,
                  touchAngle: 45,
+				 preloadImages: false,     // lazy loading과 함께 사용
+				lazy: true,
+				watchSlidesProgress: true,
+				touchRatio: 1.5,          // 모바일에서 더 부드럽게
              });
 			 // ★ 모바일용 미리 불러오기 (터치 시작 시점 감지) ★
 			const projectCards = document.querySelectorAll('.project-card');
@@ -650,8 +654,8 @@
              };
              // 클릭 시 Swiper 모달 열기
              img.onclick = function() {
-                 openModal(this.dataset.fullSrc);
-             };
+				openModal(this);   // ← 문자열이 아닌 img 요소 자체를 전달
+				};
              container.appendChild(img);
          }
 
@@ -664,46 +668,48 @@
          }
          
 // ★ Swiper를 이용한 모달 열기 함수 (수정됨) ★
-function openModal(clickedSrc) {
+function openModal(clickedImg) {
     const modal = document.getElementById('image-modal');
     
-    // 1. 현재 화면에 보이는 이미지들을 모두 가져옵니다.
-    const images = Array.from(document.querySelectorAll('.detail-image'))
-        .filter(img => img.style.display !== 'none');
+    // 현재 상세 페이지의 이미지들만 정확히 가져오기 (다른 프로젝트 영향 방지)
+    const images = Array.from(document.querySelectorAll('#detail-images-container .detail-image'))
+        .filter(img => img.style.display !== 'none' && img.offsetParent !== null);
+
+    // 클릭한 이미지의 정확한 위치 찾기 (이게 핵심!)
+    const initialSlideIndex = images.findIndex(img => img === clickedImg);
     
-    let initialSlideIndex = 0;
-    let slidesHTML = []; // 새 슬라이드 HTML 문자열을 담을 배열
-    
-    // 2. 가져온 이미지들을 Swiper 슬라이드 형식으로 만들어 배열에 담습니다.
-    images.forEach((img, index) => {
-        if (img.dataset.fullSrc === clickedSrc) {
-            initialSlideIndex = index;
-        }
-		slidesHTML.push(`
-				<div class="swiper-slide">
-					<div class="swiper-zoom-container">
-						<img src="${img.dataset.fullSrc}" alt="Gallery Image">
-					</div>
-				</div>
-			`);
-		});
-    
-    // 3. 모달을 열고 스크롤을 잠급니다.
+    if (initialSlideIndex === -1) {
+        console.error("클릭한 이미지를 목록에서 찾을 수 없습니다.");
+        return;
+    }
+
+    // 슬라이드 HTML 생성
+    const slidesHTML = images.map(img => `
+        <div class="swiper-slide">
+            <div class="swiper-zoom-container">
+                <img src="${img.dataset.fullSrc || img.src}" 
+                     alt="Gallery Image">
+            </div>
+        </div>
+    `);
+
+    // 모달 열기
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    
-    // 4. Swiper 전용 API를 사용하여 슬라이드를 안전하게 교체합니다.
+
     if (swiper) {
-        swiper.removeAllSlides();       // 기존 슬라이드를 Swiper 내부 로직에 맞춰 안전하게 제거
-        swiper.appendSlide(slidesHTML); // 새로운 슬라이드 배열 일괄 추가
-        swiper.update();                // Swiper 상태 업데이트
+        swiper.removeAllSlides();
+        swiper.appendSlide(slidesHTML);
+        swiper.update();
         
-        // 약간의 딜레이를 주어 Swiper가 렌더링을 마친 후 위치를 이동하게 합니다.
+        // 즉시 이동 (전환 효과 없이)
         setTimeout(() => {
-            swiper.slideToLoop(initialSlideIndex, 0); 
-        }, 10);
+            swiper.slideToLoop(initialSlideIndex, 0, false);
+        }, 30);
+    } else {
+        console.error("Swiper가 초기화되지 않았습니다.");
     }
-}         
+}
          function closeModal() {
              document.getElementById('image-modal').style.display = 'none';
              document.body.style.overflow = ''; 
